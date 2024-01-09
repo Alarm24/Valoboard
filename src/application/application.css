@@ -1,0 +1,5 @@
+.bg {
+	-fx-background-image:url('../images/start_background.jpeg');
+	-fx-background-repeat: no-repeat;
+  	-fx-background-size: cover;
+}

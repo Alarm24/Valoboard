@@ -1,0 +1,373 @@
+@startuml
+abstract class base.Agent {
+- String name
+- int shootingDamage
+- int healDamage
+- int actionAvailable
+- int hp
+- int shootingDistance
+- boolean skillAvailable
+- boolean ultimateAvailable
+- Coordinate currentLocation
+- ImageView agentIcon
++ String agentIconPath
+- GameMap gameMap
+~ boolean isAttacker
+- boolean isSlowState
+- boolean isSmokeState
+- boolean isDead
+- boolean usingSkill
++ {abstract}void setNewRound()
++ boolean isAttacker()
++ List<Coordinate> getAvailableNextMovePosition()
++ List<Coordinate> getAvailableSkillRange(int)
++ {static} ArrayList<Coordinate> getSkillEffectRange(Coordinate,int)
++ {static} ArrayList<Agent> getEffectAgent(Coordinate,int)
++ List<Coordinate> getAllAllyLocations()
++ void setIsMoved()
++ void visualizeAgent()
++ void removeAgentFromBoard()
++ void clearAgentIcon()
++ boolean getSkillAvailable()
++ void setSkillAvailable(boolean)
++ int getActionAvailable()
++ void setActionAvailable(int)
++ boolean getUltimateAvailable()
++ void setUltimateAvailable(boolean)
++ String getName()
++ void setName(String)
++ int getShootingDamage()
++ void setShootingDamage(int)
++ int getHp()
++ void setHp(int)
++ int getShootingDistance()
++ void setShootingDistance(int)
++ void setCurrentLocation(Coordinate)
++ Coordinate getCurrentLocation()
++ int getHealDamage()
++ void setHealDamage(int)
++ void setCoordinate(Coordinate)
++ boolean isSlowState()
++ void setSlowState(boolean)
++ boolean isSmokeState()
++ void setSmokeState(boolean)
++ boolean isDead()
++ void setDead(boolean)
++ boolean isUsingSkill()
++ void setUsingSkill(boolean)
++ {abstract}String toString()
++ ImageView getAgentIcon()
++ String getAgentIconPath()
+}
+class pane.RootPane {
+- {static} RootPane rootPane
+- double lastX
+- double scale
+- {static} Player attacker
+- {static} Player defender
+- BottomPane bottomPane
+- SceneController sceneController
+- HBox getMiddlePane()
+- void setupZoom(HBox)
+- void setupPan(HBox)
++ void showEndGameDialog(String)
++ void onGameEnd(String)
++ void showBottomPane()
++ void hideBottomPane()
++ {static} RootPane getInstance()
+}
+class character.Sage {
++ {static} String dIconPath
++ {static} String aIconPath
+- GameMap gameMap
++ void skillSage()
++ String toString()
+}
+class eventHandler.BrimstoneUltimateHandler {
+- Agent agent
+- BoardPane boardPane
+- AgentManager agentManager
++ void handle(ActionEvent)
+- void changeBackToDefaultChessBoard()
+}
+class eventHandler.SageUltimateHandler {
+- Agent agent
+- BoardPane boardPane
+- AgentManager agentManager
++ void handle(ActionEvent)
+- void changeBackToDefaultChessBoard()
+}
+class eventHandler.ShootEventHandler {
+- Agent agent
+- Coordinate from
+- Coordinate destination
+- AgentManager agentManager
++ void handle(MouseEvent)
+- void shootAgent()
+}
+class eventHandler.HealEventHandler {
+- Agent agent
+- Coordinate destination
+- AgentManager agentManager
++ void handle(MouseEvent)
+- void healAgent()
+}
+class pane.TopPane {
+- {static} TopPane INSTANCE
+- Label turnNumberLabel
+- Label JettAttRank
+- Label JettDefRank
+- Label SageAttRank
+- Label SageDefRank
+- Label BrimAttRank
+- Label BrimDefRank
++ void updateHPAtt(Agent)
++ void updateHPDef(Agent)
++ void updateTurnNumber(int)
++ {static} TopPane getInstance()
+}
+class pane.BottomPane {
+- {static} BottomPane INSTANCE
++ void prepareForAgent(Agent)
++ {static} BottomPane getInstance()
+}
+class eventHandler.SelectShootHandler {
+- Agent agent
+- BoardPane boardPane
+- AgentManager agentManager
++ void handle(ActionEvent)
+- void changeBackToDefaultChessBoard()
+}
+class util.Coordinate {
+- int row
+- int col
+- GameMap gameMap
++ Coordinate getUpward()
++ Coordinate getDownward()
++ Coordinate getLHS()
++ Coordinate getRHS()
++ Coordinate getTopLeft()
++ Coordinate getTopRight()
++ Coordinate getBottomLeft()
++ Coordinate getBottomRight()
++ boolean equals(Object)
++ int getCol()
++ int getRow()
++ boolean isCoordinateExist(int,int)
++ String toString()
+}
+abstract class character.Sentinel {
++ int DEFAULT_HP
++ int DEFAULT_SHOOTING_DAMAGE
++ int DEFAULT_SHOOTING_DISTANCE
++ int HEAL
++ void setNewRound()
++ void setHp(int)
+- void onDeath()
+}
+class constant.GameMap {
+- int[][] map
++ int[][] getMap()
++ int getWidth()
++ int getHeight()
++ int getCoordinate(int,int)
+}
+class util.Resources {
++ {static} ImageView loadAgentIcon(String)
++ {static} ImageView loadImageFromPath(String)
+}
+class character.Brimstone {
++ {static} String dIconPath
++ {static} String aIconPath
+- GameMap gameMap
++ void skillBrimstone()
++ void ultimateskill(Coordinate)
++ String toString()
+}
+interface pane.GameEndListener {
+~ void onGameEnd(String)
+}
+class util.Movement {
+- Player player
+- Agent agent
+- Coordinate from
+- Coordinate to
+- void processMovement()
++ String toString()
+}
+class character.Jett {
++ {static} String dIconPath
++ {static} String aIconPath
+- GameMap gameMap
++ List<Coordinate> getAvailableNextMovePosition()
++ void ultimateSkill()
++ String toString()
+}
+class pane.BoardPane {
+- {static} BoardPane INSTANCE
++ {static} int height
++ {static} int width
++ {static} int GRID_SIZE
++ {static} int ICON_SIZE
++ {static} String defaultGridStyle
++ {static} String defaultAvailableMoveGuideStyle
++ {static} String defaultAvailableShootStyle
++ {static} String defaultAvailableHealStyle
+- Label[][] grids
+- void setGridColor(Label,int,int)
+- void setChessboardGrid(Label,int,int)
+- void addGridToThePane(int,int)
++ Label getOneCell(int,int)
++ Label getOneCell(Coordinate)
++ {static} BoardPane getInstance()
+}
+class eventHandler.SelectAoeHandler {
+- Agent agent
+- BoardPane boardPane
+- AgentManager agentManager
++ void handle(ActionEvent)
+- void changeBackToDefaultChessBoard()
+}
+class eventHandler.JettSkillHandler {
+- Agent agent
+- BoardPane boardPane
+- AgentManager agentManager
++ void handle(ActionEvent)
+- void changeBackToDefaultChessBoard()
+}
+class base.AgentManager {
+- {static} int ACTIONS_PER_ROUND
+- GameEndListener gameEndListener
+- {static} AgentManager INSTANCE
+- BoardPane boardPane
+- Player attacker
+- Player defender
+- GameMap gameMap
+- int round
+- int actionCount
++ void setupGame(Player,Player)
++ void startGame()
+- boolean isAttackerTurn()
+- void clearAllEventHandler()
++ void goNextIteration()
+- void processPlayer()
+- void resetAgents()
++ boolean haveAgentCheck(int,int)
++ boolean haveAgent(Coordinate,boolean)
++ void havingShootAgent(Agent,Coordinate)
++ void havingHealAgent(Agent,Coordinate)
++ void havingAgentMovement(Agent,Coordinate,Coordinate)
++ List<Agent> getAllAgents()
++ List<Agent> getAttackerAgents()
++ List<Agent> getDefenderAgents()
+- void checkWinConditions()
+- boolean checkAttackerWinCondition()
+- boolean checkAllAgentsDead()
++ void setGameEndListener(GameEndListener)
+- void endGame(String)
+- int getMapCoordinate(Coordinate)
++ {static} AgentManager getInstance()
+}
+class application.Main {
++ void start(Stage)
++ {static} void main(String[])
+}
+class base.Player {
+- String name
+- List<Agent> ownedAgent
+- boolean isAttacker
+- void addAgent()
+- void visualizeAgent()
+~ void processEachRound()
+- void addEventHandler()
++ String getName()
+~ List<Agent> getOwnedAgent()
+}
+abstract class character.Controller {
++ int DEFAULT_HP
++ int DEFAULT_SHOOTING_DAMAGE
++ int DEFAULT_SHOOTING_DISTANCE
++ void setNewRound()
++ void setHp(int)
+- void onDeath()
+}
+class eventHandler.MoveEventHandler {
+- Agent agent
+- Coordinate from
+- Coordinate destination
+- AgentManager agentManager
++ void handle(MouseEvent)
+- void movingAgent()
+}
+class eventHandler.JettUltimateHandler {
+- Agent agent
+- BoardPane boardPane
+- AgentManager agentManager
++ void handle(ActionEvent)
+- void changeBackToDefaultChessBoard()
+}
+class eventHandler.AoeDamageHandler {
+- Agent agent
+- Coordinate from
+- Coordinate destination
+- AgentManager agentManager
++ void handle(MouseEvent)
+}
+abstract class character.Duelist {
++ int DEFAULT_HP
++ int DEFAULT_SHOOTING_DAMAGE
++ int DEFAULT_SHOOTING_DISTANCE
++ void setNewRound()
++ void setHp(int)
+- void onDeath()
+}
+class application.SceneController {
+- Stage stage
+- Scene scene
+- Parent root
++ void switchToGame(ActionEvent)
++ void switchToHome(ActionEvent)
++ void switchToRules(ActionEvent)
++ void exitProgram()
+}
+class eventHandler.AoeHandler {
+- Agent agent
+- Coordinate from
+- Coordinate destination
+- AgentManager agentManager
++ void handle(MouseEvent)
+}
+class eventHandler.SelectMoveHandler {
+- Agent agent
+- BoardPane boardPane
+- AgentManager agentManager
++ void handle(ActionEvent)
+- void changeBackToDefaultChessBoard()
+}
+
+
+pane.GameEndListener <|.. pane.RootPane
+pane.BorderPane <|-- pane.RootPane
+character.Sentinel <|-- character.Sage
+javafx.event.EventHandler <|.. eventHandler.BrimstoneUltimateHandler
+javafx.event.EventHandler <|.. eventHandler.SageUltimateHandler
+javafx.event.EventHandler <|.. eventHandler.ShootEventHandler
+javafx.event.EventHandler <|.. eventHandler.HealEventHandler
+javafx.scene.layout.HBox <|-- pane.TopPane
+javafx.scene.layout.HBox <|-- pane.BottomPane
+javafx.event.EventHandler <|.. eventHandler.SelectShootHandler
+base.Agent <|-- character.Sentinel
+character.Controller <|-- character.Brimstone
+character.Duelist <|-- character.Jett
+javafx.scene.layout.Pane <|-- pane.BoardPane
+javafx.event.EventHandler <|.. eventHandler.SelectAoeHandler
+javafx.event.EventHandler <|.. eventHandler.JettSkillHandler
+javafx.application.Application <|-- application.Main
+base.Agent <|-- character.Controller
+javafx.event.EventHandler <|.. eventHandler.MoveEventHandler
+javafx.event.EventHandler <|.. eventHandler.JettUltimateHandler
+javafx.event.EventHandler <|.. eventHandler.AoeDamageHandler
+base.Agent <|-- character.Duelist
+javafx.event.EventHandler <|.. eventHandler.AoeHandler
+javafx.event.EventHandler <|.. eventHandler.SelectMoveHandler
+@enduml
